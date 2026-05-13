@@ -19,6 +19,8 @@ class Task:
     level: int
     start: date | None = None
     end: date | None = None
+    role: str = ""
+    assignee: str = ""
     children: list["Task"] = field(default_factory=list)
 
     def walk(self) -> Iterator["Task"]:
@@ -81,6 +83,9 @@ def _build_task(raw: dict[str, Any], parent_level: int | None) -> Task:
         if start > end:
             raise GanttError(f"Task '{task_id}' has start ({start}) after end ({end})")
 
+    role = str(raw.get("role") or "")
+    assignee = str(raw.get("assignee") or "")
+
     children_raw = raw.get("children") or []
     if not isinstance(children_raw, list):
         raise GanttError(f"Task '{task_id}'.children must be a list")
@@ -93,7 +98,16 @@ def _build_task(raw: dict[str, Any], parent_level: int | None) -> Task:
         start = min(c.start for c in children if c.start is not None)
         end = max(c.end for c in children if c.end is not None)
 
-    return Task(id=task_id, name=name, level=level, start=start, end=end, children=children)
+    return Task(
+        id=task_id,
+        name=name,
+        level=level,
+        start=start,
+        end=end,
+        role=role,
+        assignee=assignee,
+        children=children,
+    )
 
 
 def _check_unique_ids(tasks: list[Task]) -> None:

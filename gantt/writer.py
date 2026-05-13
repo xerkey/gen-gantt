@@ -9,9 +9,11 @@ from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.worksheet import Worksheet
 
 from .layout import (
+    COL_ASSIGNEE,
     COL_DATE_START,
     COL_END,
     COL_NAME,
+    COL_ROLE,
     COL_START,
     ROW_DAY,
     ROW_MONTH,
@@ -39,19 +41,21 @@ LEFT = Alignment(horizontal="left", vertical="center")
 
 
 def _write_headers(ws: Worksheet, layout: Layout) -> None:
-    name_header = ws.cell(row=ROW_DAY, column=COL_NAME, value="タスク名")
-    name_header.font = HEADER_FONT
-    name_header.alignment = LEFT
-    start_header = ws.cell(row=ROW_DAY, column=COL_START, value="開始日")
-    start_header.font = HEADER_FONT
-    start_header.alignment = CENTER
-    end_header = ws.cell(row=ROW_DAY, column=COL_END, value="終了日")
-    end_header.font = HEADER_FONT
-    end_header.alignment = CENTER
+    label_columns = [
+        (COL_ROLE, "役割", LEFT),
+        (COL_ASSIGNEE, "担当者", LEFT),
+        (COL_NAME, "タスク名", LEFT),
+        (COL_START, "開始日", CENTER),
+        (COL_END, "終了日", CENTER),
+    ]
+    for col, label, align in label_columns:
+        cell = ws.cell(row=ROW_DAY, column=col, value=label)
+        cell.font = HEADER_FONT
+        cell.alignment = align
 
     for r in (ROW_MONTH, ROW_WEEK, ROW_DAY):
-        for c in (COL_NAME, COL_START, COL_END):
-            ws.cell(row=r, column=c).fill = HEADER_FILL
+        for col, _, _ in label_columns:
+            ws.cell(row=r, column=col).fill = HEADER_FILL
 
     prev_month: tuple[int, int] | None = None
     for dc in layout.date_columns:
@@ -80,21 +84,31 @@ def _write_headers(ws: Worksheet, layout: Layout) -> None:
 def _write_task_rows(ws: Worksheet, layout: Layout) -> None:
     for tr in layout.task_rows:
         task = tr.task
+        font = LEVEL_FONTS[task.level]
+
+        role_cell = ws.cell(row=tr.row, column=COL_ROLE, value=task.role or None)
+        role_cell.font = font
+        role_cell.alignment = LEFT
+
+        assignee_cell = ws.cell(row=tr.row, column=COL_ASSIGNEE, value=task.assignee or None)
+        assignee_cell.font = font
+        assignee_cell.alignment = LEFT
+
         indent = "  " * task.level
         name_cell = ws.cell(row=tr.row, column=COL_NAME, value=f"{indent}{task.name}")
-        name_cell.font = LEVEL_FONTS[task.level]
+        name_cell.font = font
         name_cell.alignment = LEFT
 
         if task.start is not None:
             start_cell = ws.cell(row=tr.row, column=COL_START, value=task.start)
             start_cell.number_format = "yyyy-mm-dd"
             start_cell.alignment = CENTER
-            start_cell.font = LEVEL_FONTS[task.level]
+            start_cell.font = font
         if task.end is not None:
             end_cell = ws.cell(row=tr.row, column=COL_END, value=task.end)
             end_cell.number_format = "yyyy-mm-dd"
             end_cell.alignment = CENTER
-            end_cell.font = LEVEL_FONTS[task.level]
+            end_cell.font = font
 
 
 def _draw_bars(ws: Worksheet, layout: Layout) -> None:
@@ -110,6 +124,8 @@ def _draw_bars(ws: Worksheet, layout: Layout) -> None:
 
 
 def _apply_dimensions(ws: Worksheet, layout: Layout) -> None:
+    ws.column_dimensions[get_column_letter(COL_ROLE)].width = 16
+    ws.column_dimensions[get_column_letter(COL_ASSIGNEE)].width = 16
     ws.column_dimensions[get_column_letter(COL_NAME)].width = 30
     ws.column_dimensions[get_column_letter(COL_START)].width = 12
     ws.column_dimensions[get_column_letter(COL_END)].width = 12
@@ -137,7 +153,7 @@ def _apply_outline_properties(ws: Worksheet) -> None:
 
 
 def _freeze_panes(ws: Worksheet) -> None:
-    ws.freeze_panes = "D4"
+    ws.freeze_panes = ws.cell(row=ROW_TASK_START, column=COL_DATE_START).coordinate
 
 
 def write_workbook(layout: Layout, output_path: Path) -> None:

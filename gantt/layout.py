@@ -6,10 +6,12 @@ from datetime import date, timedelta
 from .loader import Project, Task
 
 
-COL_NAME = 1
-COL_START = 2
-COL_END = 3
-COL_DATE_START = 4
+COL_ROLE = 1
+COL_ASSIGNEE = 2
+COL_NAME = 3
+COL_START = 4
+COL_END = 5
+COL_DATE_START = 6
 
 ROW_MONTH = 1
 ROW_WEEK = 2

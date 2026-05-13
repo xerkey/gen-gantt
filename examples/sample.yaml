@@ -8,66 +8,92 @@ tasks:
   - id: "phase1"
     name: "フェーズ1: 設計"
     level: 0
+    role: "PM"
+    assignee: "山田"
     children:
       - id: "task1-1"
         name: "要件定義"
         level: 1
+        role: "アナリスト"
+        assignee: "佐藤"
         start: "2025-06-01"
         end: "2025-06-14"
         children:
           - id: "subtask1-1-1"
             name: "ヒアリング"
             level: 2
+            role: "アナリスト"
+            assignee: "佐藤"
             start: "2025-06-01"
             end: "2025-06-07"
           - id: "subtask1-1-2"
             name: "要件書作成"
             level: 2
+            role: "アナリスト"
+            assignee: "鈴木"
             start: "2025-06-08"
             end: "2025-06-14"
       - id: "task1-2"
         name: "基本設計"
         level: 1
+        role: "設計"
+        assignee: "高橋"
         start: "2025-06-15"
         end: "2025-06-30"
 
   - id: "phase2"
     name: "フェーズ2: 実装"
     level: 0
+    role: "リード"
+    assignee: "田中"
     children:
       - id: "task2-1"
         name: "バックエンド実装"
         level: 1
+        role: "BE"
+        assignee: "中村"
         start: "2025-07-01"
         end: "2025-07-31"
         children:
           - id: "subtask2-1-1"
             name: "API設計"
             level: 2
+            role: "BE"
+            assignee: "中村"
             start: "2025-07-01"
             end: "2025-07-10"
           - id: "subtask2-1-2"
             name: "API実装"
             level: 2
+            role: "BE"
+            assignee: "小林"
             start: "2025-07-11"
             end: "2025-07-31"
       - id: "task2-2"
         name: "フロントエンド実装"
         level: 1
+        role: "FE"
+        assignee: "伊藤"
         start: "2025-07-15"
         end: "2025-08-15"
 
   - id: "phase3"
     name: "フェーズ3: テスト"
     level: 0
+    role: "QA"
+    assignee: "渡辺"
     children:
       - id: "task3-1"
         name: "結合テスト"
         level: 1
+        role: "QA"
+        assignee: "渡辺"
         start: "2025-08-16"
         end: "2025-08-25"
       - id: "task3-2"
         name: "受け入れテスト"
         level: 1
+        role: "PM"
+        assignee: "山田"
         start: "2025-08-26"
         end: "2025-08-31"

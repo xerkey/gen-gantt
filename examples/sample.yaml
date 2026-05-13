@@ -1,0 +1,73 @@
+project:
+  name: "Sample Project"
+  start: "2025-06-01"
+  end: "2025-08-31"
+  week_start: "monday"
+
+tasks:
+  - id: "phase1"
+    name: "フェーズ1: 設計"
+    level: 0
+    children:
+      - id: "task1-1"
+        name: "要件定義"
+        level: 1
+        start: "2025-06-01"
+        end: "2025-06-14"
+        children:
+          - id: "subtask1-1-1"
+            name: "ヒアリング"
+            level: 2
+            start: "2025-06-01"
+            end: "2025-06-07"
+          - id: "subtask1-1-2"
+            name: "要件書作成"
+            level: 2
+            start: "2025-06-08"
+            end: "2025-06-14"
+      - id: "task1-2"
+        name: "基本設計"
+        level: 1
+        start: "2025-06-15"
+        end: "2025-06-30"
+
+  - id: "phase2"
+    name: "フェーズ2: 実装"
+    level: 0
+    children:
+      - id: "task2-1"
+        name: "バックエンド実装"
+        level: 1
+        start: "2025-07-01"
+        end: "2025-07-31"
+        children:
+          - id: "subtask2-1-1"
+            name: "API設計"
+            level: 2
+            start: "2025-07-01"
+            end: "2025-07-10"
+          - id: "subtask2-1-2"
+            name: "API実装"
+            level: 2
+            start: "2025-07-11"
+            end: "2025-07-31"
+      - id: "task2-2"
+        name: "フロントエンド実装"
+        level: 1
+        start: "2025-07-15"
+        end: "2025-08-15"
+
+  - id: "phase3"
+    name: "フェーズ3: テスト"
+    level: 0
+    children:
+      - id: "task3-1"
+        name: "結合テスト"
+        level: 1
+        start: "2025-08-16"
+        end: "2025-08-25"
+      - id: "task3-2"
+        name: "受け入れテスト"
+        level: 1
+        start: "2025-08-26"
+        end: "2025-08-31"

@@ -25,6 +25,16 @@ from .layout import (
 
 
 HEADER_FILL = PatternFill("solid", fgColor="FFE6E6E6")
+MONTH_FILLS = (
+    PatternFill("solid", fgColor="FFD9D9D9"),
+    PatternFill("solid", fgColor="FFB7B7B7"),
+)
+WEEK_FILLS = (
+    PatternFill("solid", fgColor="FFEDEDED"),
+    PatternFill("solid", fgColor="FFCFCFCF"),
+)
+SATURDAY_FILL = PatternFill("solid", fgColor="FFCCE5FF")
+SUNDAY_FILL = PatternFill("solid", fgColor="FFFFCCCC")
 BAR_FILLS = {
     0: PatternFill("solid", fgColor="FF1F4E78"),
     1: PatternFill("solid", fgColor="FF4472C4"),
@@ -58,14 +68,18 @@ def _write_headers(ws: Worksheet, layout: Layout) -> None:
             ws.cell(row=r, column=col).fill = HEADER_FILL
 
     prev_month: tuple[int, int] | None = None
+    month_idx = -1
+    week_idx = -1
     for dc in layout.date_columns:
         d = dc.date
         month_key = (d.year, d.month)
         if month_key != prev_month:
+            month_idx += 1
             ws.cell(row=ROW_MONTH, column=dc.col, value=f"{d.year}-{d.month:02d}")
             prev_month = month_key
 
         if dc.is_week_start:
+            week_idx += 1
             ws.cell(
                 row=ROW_WEEK,
                 column=dc.col,
@@ -74,9 +88,22 @@ def _write_headers(ws: Worksheet, layout: Layout) -> None:
 
         ws.cell(row=ROW_DAY, column=dc.col, value=d.day)
 
+        month_fill = MONTH_FILLS[month_idx % len(MONTH_FILLS)]
+        week_fill = WEEK_FILLS[week_idx % len(WEEK_FILLS)]
+        weekday = d.weekday()
+        if weekday == 5:
+            day_fill = SATURDAY_FILL
+        elif weekday == 6:
+            day_fill = SUNDAY_FILL
+        else:
+            day_fill = HEADER_FILL
+
+        ws.cell(row=ROW_MONTH, column=dc.col).fill = month_fill
+        ws.cell(row=ROW_WEEK, column=dc.col).fill = week_fill
+        ws.cell(row=ROW_DAY, column=dc.col).fill = day_fill
+
         for r in (ROW_MONTH, ROW_WEEK, ROW_DAY):
             cell = ws.cell(row=r, column=dc.col)
-            cell.fill = HEADER_FILL
             cell.alignment = CENTER
             cell.font = HEADER_FONT
 

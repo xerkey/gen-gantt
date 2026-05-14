@@ -13,11 +13,22 @@ YAML で定義したタスク構造を読み込み、日 / 週 / 月で折りた
 ## 必要環境
 
 - Python 3.10+
-- 依存パッケージ: `openpyxl`, `PyYAML`
+- [uv](https://docs.astral.sh/uv/) によるパッケージ管理
+- 依存パッケージ: `openpyxl`, `PyYAML`（`uv sync` で自動インストール）
 
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
+
+> `uv` 未インストールの場合は次のいずれかでインストール:
+>
+> ```bash
+> # macOS / Linux
+> curl -LsSf https://astral.sh/uv/install.sh | sh
+>
+> # pip 経由
+> pip install uv
+> ```
 
 ## 使い方
 
@@ -25,10 +36,10 @@ pip install -r requirements.txt
 
 ```bash
 # カレントディレクトリに出力
-python generate_gantt.py examples/sample.yaml
+uv run python generate_gantt.py examples/sample.yaml
 
 # 出力先を指定
-python generate_gantt.py examples/sample.yaml --output ./out
+uv run python generate_gantt.py examples/sample.yaml --output ./out
 ```
 
 出力ファイル名は `{project.name}_gantt.xlsx`。
@@ -171,7 +182,7 @@ tasks:
 例:
 
 ```bash
-$ python generate_gantt.py missing.yaml
+$ uv run python generate_gantt.py missing.yaml
 error: Input YAML not found: missing.yaml
 $ echo $?
 1
@@ -188,7 +199,8 @@ gantt/
   writer.py              # openpyxl による Excel 書き出し
 examples/
   sample.yaml            # サンプル入力
-requirements.txt
+pyproject.toml           # 依存定義（uv で管理）
+uv.lock                  # 依存ロックファイル
 ```
 
 ## サンプル
@@ -196,7 +208,7 @@ requirements.txt
 `examples/sample.yaml` に 3 フェーズ・6 タスク・4 サブタスクのサンプルが含まれている:
 
 ```bash
-python generate_gantt.py examples/sample.yaml --output ./out
+uv run python generate_gantt.py examples/sample.yaml --output ./out
 open "out/Sample Project_gantt.xlsx"
 ```
 

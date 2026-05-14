@@ -1,0 +1,12 @@
+[project]
+name = "gen-gantt"
+version = "0.1.0"
+description = "Generate collapsible Gantt chart Excel files from a YAML task definition."
+requires-python = ">=3.10"
+dependencies = [
+    "openpyxl>=3.1",
+    "PyYAML>=6.0",
+]
+
+[tool.uv]
+package = false
